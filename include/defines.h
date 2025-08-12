@@ -1,0 +1,9 @@
+#ifndef DEFINES_H
+#define DEFINES_H
+
+#define MAX_RESPONSE_LENGTH 13
+#define MAX_ROOMS 64
+#define MAX_ROOM_MESSAGE_LENGTH 80
+#define MAX_CHALLENGES_PER_ROOM 8
+
+#endif
