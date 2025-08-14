@@ -3,5 +3,6 @@
 
 extern Room rooms[MAX_ROOMS];
 extern char response[MAX_RESPONSE_LENGTH];
+extern Player player;
 
 #endif

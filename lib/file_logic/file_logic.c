@@ -42,7 +42,7 @@ void initialise(FILE* saveFile) {
 	rewind(saveFile);
 }
 
-void loadRooms(FILE* saveFile) {
+void extractData(FILE* saveFile) {
 	uint8_t roomCounter = 0;
 	bool connectingRooms = false;
 	size_t lineCounter = 1;
@@ -164,13 +164,17 @@ void loadRooms(FILE* saveFile) {
 				if (roomChallengeCounter >
 						MAX_CHALLENGES_PER_ROOM) {
 	fprintf(stderr, "Too many challenges assigned to room %lu (max %u)\n",
-	rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM);
-	exit(1);
+			rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM);
+					exit(1);
 				}
 				roomChallengeCounter = 0;
 				roomCounter++;
 			}
 		}
+		
+		// TODO: Extract game state
+		
+		// Update line
 		if (current == '\n') {
 			lineCounter++;
 			lineCharacterCounter = 0;
@@ -189,8 +193,7 @@ void load() {
 		}
 		initialise(saveFile);
 	}
-	loadRooms(saveFile);
-	//loadGameState(saveFile);
+	extractData(saveFile);
 	fclose(saveFile);
 }
 
