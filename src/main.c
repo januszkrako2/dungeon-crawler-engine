@@ -18,7 +18,7 @@ int main() {
   printf("\n");
 
   // Ask player for name
-  while (player.name[0] == '\0' || player.name[0] == '\n') {
+  while (player.name[0] == '\0') {
 	  printf("What is your name? ");
 	  ask();
 	  for (size_t i = 0; i < MAX_RESPONSE_LENGTH; i++) {

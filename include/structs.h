@@ -36,7 +36,7 @@ typedef struct Room {
 } Room;
 
 typedef struct Player {
-	char name[30];
+	char name[PLAYER_NAME_LENGTH];
 	Room currentRoom;
 } Player;
 

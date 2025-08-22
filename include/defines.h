@@ -5,5 +5,6 @@
 #define MAX_ROOMS 64
 #define MAX_ROOM_MESSAGE_LENGTH 80
 #define MAX_CHALLENGES_PER_ROOM 8
+#define PLAYER_NAME_LENGTH 30
 
 #endif

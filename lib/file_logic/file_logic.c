@@ -35,9 +35,9 @@ void initialise(FILE* saveFile) {
 		"\n"
 		"[GAME STATE]\n"
 		"\n"
-		"PLAYER NAME:\n"
-		"CURRENT ROOM OF PLAYER:\n"
-		"ROOMS WITH COMPLETED CHALLENGES:\n";
+		"PLAYER NAME: \n"
+		"CURRENT ROOM OF PLAYER: \n"
+		"ROOMS WITH COMPLETED CHALLENGES: \n";
 	fputs(initialConfiguration, saveFile);
 	rewind(saveFile);
 }
@@ -79,7 +79,7 @@ void extractData(FILE* saveFile) {
 		if (lineCounter % 9 == 4 && current == '\n') {
 			if (strncmp(line, "MESSAGE: ", 9) == 0) {
 				trimStart(line, 9);
-				for (uint8_t i = 0; i < MAX_ROOM_MESSAGE_LENGTH;
+				for (size_t i = 0; i < MAX_ROOM_MESSAGE_LENGTH;
 						i++) {
 					rooms[roomCounter].message[i] =
 						line[i];
@@ -163,8 +163,9 @@ void extractData(FILE* saveFile) {
 				}
 				if (roomChallengeCounter >
 						MAX_CHALLENGES_PER_ROOM) {
-	fprintf(stderr, "Too many challenges assigned to room %lu (max %u)\n",
-			rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM);
+					fprintf(stderr,
+						"Too many challenges assigned to room %lu (max %u).\n",
+					rooms[roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM);
 					exit(1);
 				}
 				roomChallengeCounter = 0;
@@ -172,7 +173,87 @@ void extractData(FILE* saveFile) {
 			}
 		}
 		
-		// TODO: Extract game state
+		// Extract game state
+		if (current == '\n' && strncmp(line, "PLAYER NAME: ", 13) == 0) {
+			trimStart(line, 13);
+			for (uint8_t i = 0; i < PLAYER_NAME_LENGTH; i++) {
+				if (line[i] == '\n') {
+					break;
+				}
+				player.name[i] = line[i];
+			}
+		}
+		if (current == '\n'
+					&& strncmp(line, "CURRENT ROOM OF PLAYER: ", 24) == 0) {
+			trimStart(line, 24);
+			size_t currentRoomOfPlayer = stringToSizeT(line);
+			if (currentRoomOfPlayer == 0) {
+				fprintf(stderr,
+					"Room of player cannot be 0 (savefile line %lu).\n",
+					lineCounter);
+				exit(1);
+			} else {
+				size_t i;
+				for (i = 0; i < MAX_ROOMS; i++) {
+					if (rooms[i].roomNumber == currentRoomOfPlayer) {
+						player.currentRoom = rooms[i];
+						break;
+					}
+				}
+				if (i == MAX_ROOMS) {
+					fprintf(stderr,
+						"Invalid player room number (savefile line %lu).\n",
+						lineCounter);
+					exit(1);
+				}
+			}
+		}
+		if (current == '\n' &&
+						strncmp(line, 
+								"ROOMS WITH COMPLETED CHALLENGES: ",
+								33) == 0) {
+			trimStart(line, 33);
+			size_t lineLength = sizeof(line);
+			char buffer[lineLength];
+			for (size_t i = 0; i < lineLength; i++) {
+				buffer[i] = 0;
+			}
+			size_t bufferCounter = 0;
+			for (size_t i = 0; i < lineLength; i++) {
+				if (line[i] == '\n') {
+					break;
+				}
+				buffer[bufferCounter] = line[i];
+				if (buffer[bufferCounter] == ',') {
+					size_t currentRoomNumber = stringToSizeT(buffer);
+					if (currentRoomNumber == 0) {
+						perror("Invalid completed room number in savefile.");
+						exit(1);
+					}
+					size_t j;
+					for (j = 0; j < MAX_ROOMS; j++) {
+						if (currentRoomNumber == rooms[j].roomNumber) {
+							for (size_t k = 0;
+										k < MAX_CHALLENGES_PER_ROOM;
+										k++) {
+								rooms[j].challenge[k] = NONE;
+							}
+							break;
+						}
+					}
+					if (j == MAX_ROOMS) {
+						perror("A completed room number doesn't"
+							   "match a room number in the savefile."
+						);
+						exit(1);
+					}
+					memset(buffer, 0, lineLength);
+					bufferCounter = 0;
+					continue;
+				}
+				bufferCounter++;
+			}
+		}
 		
 		// Update line
 		if (current == '\n') {
