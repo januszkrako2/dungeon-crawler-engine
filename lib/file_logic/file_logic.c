@@ -298,19 +298,40 @@ void saveHistory(FILE* saveFile) {
 	}
 }
 
-void saveData(FILE* saveFile) {
+void saveGame(FILE* saveFile) {
 	char current;
+	char line[80] = {0};
+	uint8_t lineCharacterCounter = 0;
+	bool savingHistory = false;
+	size_t historyCounter = 0;
 	while ((current = fgetc(saveFile)) != EOF) {
-		// TODO: logic for saving the game
+		line[lineCharacterCounter] = current;
+		lineCharacterCounter++;
+		if (lineCharacterCounter >= 80) {
+			perror("Too many characters on a line in savefile.txt");
+			exit(1);
+		}
+		if (current == '\n') {
+			if (strncmp(line, "[HISTORY]", 9) == 0) {
+				savingHistory = true;
+			}
+		}
+		if (savingHistory) {
+			if (current == '\n') {
+				// TODO: check for a number at the start of the line,
+				// add one if it's not there, then paste the response
+				// (when adding the first number, add one blank line before it)
+			}
+		}
 	}
 }
 
 void save() {
 	FILE* saveFile = fopen("savefile.txt", "w+");
 	if (saveFile == NULL) {
-		perror("Error saving to file.");
+		perror("Error saving to file - it doesn't exist.");
 		exit(1);
 	}
-	saveData(saveFile);
+	saveGame(saveFile);
 	fclose(saveFile);
 }
