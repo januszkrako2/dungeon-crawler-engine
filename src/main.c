@@ -5,8 +5,6 @@ This is for Windows compatibility -- when people double-click on the
 executable, it opens a terminal window that instantly closes before
 the user can see any error message.
 
-TODO: Change integer types.
-
 TODO: Refactor file logic.
 */ 
 
