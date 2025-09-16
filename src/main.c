@@ -78,7 +78,6 @@ int main(void)
     }
 
     global.player.currentRoom = global.rooms[0];
-
     printf("\n%s", global.introductoryText);
 
     // Main game loop
