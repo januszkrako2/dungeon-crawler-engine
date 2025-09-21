@@ -3,7 +3,7 @@
 
 typedef struct
 {
-    uint32_t health;
+    int32_t health;
 } PhysicalChallenge;
 
 typedef struct

@@ -69,6 +69,16 @@ void interpretInput(void)
     }
 }
 
+void physicalChallenge(void)
+{
+
+}
+
+void puzzleChallenge(void)
+{
+
+}
+
 void gameLogic(void)
 {
     interpretInput();
@@ -129,5 +139,70 @@ void gameLogic(void)
         }
         
         printf("\n%s", global.player.currentRoom.message);
+    }
+
+    for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++)
+    {
+        if (global.player.currentRoom.challenge[i] == PHYSICAL)
+        {
+            PhysicalChallenge delinquent = {0};
+            delinquent.health = 2;
+
+            printf("A delinquent appears! They look at you menacingly.\n");
+
+            while (delinquent.health > 0)
+            {
+                printf("How do you respond? ");
+                ask();
+
+                if (strncmp(global.response, "attack", 6) == 0)
+                {
+                    delinquent.health--;
+
+                    if (delinquent.health > 0)
+                    {
+                        printf(
+                            "\nThe delinquent takes a hit. They're unphased.\n"
+                        );
+                    }
+                    else
+                    {
+                        printf(
+                            "\nThe delinquent falls and dies.\n"
+                        );
+                        
+                        size_t j;
+
+                        for (j = 0; j < MAX_ROOMS; j++)
+                        {
+                            if (global.player.currentRoom.roomNumber ==
+                                global.rooms[j].roomNumber)
+                            {
+                                for (size_t k = 0; k < MAX_CHALLENGES_PER_ROOM;
+                                    k++)
+                                {
+                                    if (global.rooms[j].challenge[k] ==
+                                        PHYSICAL)
+                                    {
+                                        global.rooms[j].challenge[k] = NONE;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+
+                        if (j == MAX_ROOMS)
+                        {
+                            perror("Cannot clear challenge from a room.");
+                            exit(1);
+                        }
+                    }
+                }
+            }
+        }
+        else if (global.player.currentRoom.challenge[i] == PUZZLE)
+        {
+        }
     }
 }
