@@ -75,10 +75,8 @@ void extractRooms(FILE* roomFile)
             if (strncmp(line, "ROOM NUMBER: ", 13) == 0)
             {
                 trimStart(line, 13);
-                size_t roomNumberConverted = 
-                    stringToSizeT(line);
-                global.rooms[roomCounter].roomNumber = 
-                    roomNumberConverted;
+                size_t roomNumberConverted = stringToSizeT(line);
+                global.rooms[roomCounter].roomNumber = roomNumberConverted;
             }
         }
 
