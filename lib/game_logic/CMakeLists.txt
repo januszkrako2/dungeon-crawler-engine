@@ -10,5 +10,5 @@ target_compile_options(game_logic PUBLIC
     -O3
     -Wall -Wextra -Wpedantic -Werror
 )
-target_link_libraries(game_logic PRIVATE text_utils)
+target_link_libraries(game_logic PRIVATE utils)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE game_logic)

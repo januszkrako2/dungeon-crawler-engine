@@ -15,7 +15,7 @@ TODO: Refactor file logic.
 #include "structs.h"
 #include "mutables.h"
 
-#include "text_utils.h"
+#include "utils.h"
 #include "file_logic.h"
 #include "game_logic.h"
 

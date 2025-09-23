@@ -10,7 +10,7 @@
 #include "structs.h"
 #include "mutables.h"
 
-#include "text_utils.h"
+#include "utils.h"
 
 void helpText(void)
 {
