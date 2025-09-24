@@ -14,9 +14,9 @@
 
 void helpText(void) {
 	const char* helpText =
-                             "Type compass directions to move.\n"
-	                     "Type 'attack' to attack.\n"
-	                     "Type numbers to solve puzzles.\n";
+            "Type compass directions to move.\n"
+	    "Type 'attack' to attack.\n"
+	    "Type numbers to solve puzzles.\n";
 	printf("%s", helpText);
 }
 
