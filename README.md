@@ -49,6 +49,19 @@ As good practise, you should identify all other rooms by room number 100 and gre
 
 Currently, there are two types of challenges: physical and puzzle. The physical challenge spawns a delinquent in the room whom you must attack to proceed. The puzzle challenge spawns a note with a maths problem you must solve to proceed.
 
+Add new rooms by adding more of these blocks after the last one, above the ``[INTRODUCTORY TEXT]`` line:
+
+```
+ROOM NUMBER: 102
+MESSAGE: You enter another room. This is an example.
+CONNECTIONS:
+	NORTH: None
+	EAST: None
+	SOUTH: None
+	WEST: None
+CHALLENGE: None
+```
+
 ## How to play
 
 Launch the application in a terminal and follow the onscreen instructions.
