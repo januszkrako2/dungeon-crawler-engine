@@ -57,9 +57,7 @@ void physicalChallenge(void) {
 		ask();
 		interpretInput();
 
-		if (strncmp(global.response, "attack", 6) != 0) {
-			continue;
-		}
+		if (strncmp(global.response, "attack", 6) != 0) continue;
 
 		delinquent.health--;
 		if (delinquent.health > 0) {
@@ -105,9 +103,8 @@ void clearChallenge(void) {
 		}
 		break;
 	}
-	if (i == MAX_ROOMS)
-	{
-		perror("Cannot clear challenge from a room.");
+	if (i == MAX_ROOMS) {
+		printf("Cannot clear challenge from a room.\n");
 		leave();
 	}
 }
@@ -143,7 +140,7 @@ void moveLogic(size_t nextRoom) {
 		}
 	}
 	if (i == MAX_ROOMS) {
-		perror("Couldn't find room.");
+		printf("Couldn't find room.\n");
 		leave();
 	}
 	
@@ -173,13 +170,10 @@ void gameLogic(void) {
 		nextRoom = global.player.currentRoom.connections[WEST];
 	}
 
-	if (moved) {
-		moveLogic(nextRoom);
-	}
-
+	if (moved) moveLogic(nextRoom);
 	if (global.player.currentRoom.roomNumber == 1) {
+		printf("Congratulations, %s!\n", global.player.name);
 		leave();
 	}
-
 	challengeLogic();
 }
