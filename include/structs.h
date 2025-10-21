@@ -46,6 +46,7 @@ typedef struct {
 	bool connectingRooms;
 	bool readingIntroductoryText;
 	size_t roomCounter;
+	size_t roomChallengeCounter;
 	size_t lineCounter;
 	size_t lineCharacterCounter;
 	char line[MAX_FILE_LINE_LENGTH];
