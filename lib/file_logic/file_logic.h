@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 void initialiseRoomFile(FILE* roomFile);
-void extractValidate(FileInfo* info);
+void validateLine(FileInfo* info);
 void addRoomNumber(FileInfo* info);
 void extractRoomNumber(FileInfo* info);
 void addRoomMessage(FileInfo* info);

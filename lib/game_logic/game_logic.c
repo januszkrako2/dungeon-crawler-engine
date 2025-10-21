@@ -14,9 +14,10 @@
 
 void helpText(void) {
 	const char* helpText =
-            "Type compass directions to move.\n"
-	    "Type 'attack' to attack.\n"
-	    "Type numbers to solve puzzles.\n";
+        "Type compass directions to move.\n"
+	"Type 'attack' to attack.\n"
+	"Type numbers to solve puzzles.\n";
+	
 	printf("%s", helpText);
 }
 
@@ -28,9 +29,10 @@ void interpretInput(void) {
 			read++;
 			continue;
 		}
-		if (global.response[read] >= 'A' && global.response[read] <= 'Z') {
-			global.response[read] += 32;
-		}
+
+		// If uppercase, make lowercase
+		if (global.response[read] >= 'A' && global.response[read] <= 'Z') global.response[read] += 32;
+
 		global.response[write] = global.response[read];
 		write++;
 		read++;
@@ -47,18 +49,18 @@ void interpretInput(void) {
 }
 
 void physicalChallenge(void) {
-	const size_t DELINQUENT_HEALTH = 2;
 	PhysicalChallenge delinquent;
-	delinquent.health = DELINQUENT_HEALTH;
+	delinquent.health = 2;
 
 	printf("A delinquent appears! They look at you menacingly.\n");
+
 	while (delinquent.health > 0) {
 		printf("How do you respond? ");
 		ask();
+
 		interpretInput();
-
 		if (strncmp(global.response, "attack", 6) != 0) continue;
-
+		
 		delinquent.health--;
 		if (delinquent.health > 0) {
 			printf("\nThe delinquent takes a hit.\n");
@@ -91,9 +93,7 @@ void puzzleChallenge(void) {
 void clearChallenge(void) {
 	size_t i;
 	for (i = 0; i < MAX_ROOMS; i++) {
-		if (global.player.currentRoom.roomNumber != global.rooms[i].roomNumber) {
-			continue;
-		}
+		if (global.player.currentRoom.roomNumber != global.rooms[i].roomNumber) continue;
 		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) {
 			if (global.rooms[i].challenge[j] != NONE) {
 				global.rooms[i].challenge[j] = NONE;
@@ -143,7 +143,7 @@ void moveLogic(size_t nextRoom) {
 		printf("Couldn't find room.\n");
 		leave();
 	}
-	
+
 	printf("\n%s", global.player.currentRoom.message);
 }
 
@@ -169,11 +169,12 @@ void gameLogic(void) {
 		moved = true;
 		nextRoom = global.player.currentRoom.connections[WEST];
 	}
-
 	if (moved) moveLogic(nextRoom);
+
 	if (global.player.currentRoom.roomNumber == 1) {
 		printf("Congratulations, %s!\n", global.player.name);
 		leave();
 	}
+
 	challengeLogic();
 }

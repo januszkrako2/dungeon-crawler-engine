@@ -50,6 +50,7 @@ typedef struct {
 	size_t lineCharacterCounter;
 	char line[MAX_FILE_LINE_LENGTH];
 	char current;
+	bool errored;
 } FileInfo;
 
 typedef struct {

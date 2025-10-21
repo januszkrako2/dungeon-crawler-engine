@@ -44,19 +44,21 @@ void initialiseRoomFile(FILE* roomFile) {
 	"[INTRODUCTORY TEXT]\n"
 	"\n"
 	"You arise from a deep rest. There's a door up north.\n";
-	
+
 	fputs(initialConfiguration, roomFile);
 	rewind(roomFile);
 }
 
-void extractValidate(FileInfo* info) {
-	if (info->lineCharacterCounter <= MAX_FILE_LINE_LENGTH) return;
-	printf("One of your lines in savefile.txt is too long\n");
-	leave();
-
-	if (info->roomCounter < MAX_ROOMS) return;
-	printf("Error: too many rooms in savefile.txt\n");
-	leave();
+void validateLine(FileInfo* info) {
+	if (info->lineCharacterCounter > MAX_FILE_LINE_LENGTH) {
+		printf("Error: line %zu in rooms.txt is too long (max %d characters, currently %zu).\n",
+		       info->lineCounter, MAX_FILE_LINE_LENGTH, info->lineCharacterCounter);
+		leave();
+	}
+	if (info->roomCounter >= MAX_ROOMS) {
+		printf("Error: too many rooms in rooms.txt (max %d).\n", MAX_ROOMS);
+		leave();
+	}
 }
 
 void addRoomNumber(FileInfo* info) {
@@ -103,11 +105,8 @@ void connectingRoomCheck(FileInfo* info) {
 
 void addRoomConnection(Connection* connection, FileInfo* info, Direction direction) {
 	if (strncmp(info->line, connection->text, connection->size) != 0) return;
-
 	trimStart(info->line, connection->size);
-	size_t index = info->roomCounter;
-	size_t number = stringToSizeT(info->line);
-	global.rooms[index].connections[direction] = number;
+	global.rooms[info->roomCounter].connections[direction] = stringToSizeT(info->line);
 }
 
 void extractRoomConnections(FileInfo* info) {
@@ -169,6 +168,7 @@ void extractRoomChallenges(FileInfo* info) {
 	if (strncmp(info->line, "CHALLENGE: ", 11) != 0) return;
 
 	trimStart(info->line, 11);
+
 	size_t roomChallengeCounter = 0;
 	while (info->line[0] != '\n') addRoomChallenges(info, &roomChallengeCounter);
 
@@ -178,7 +178,8 @@ void extractRoomChallenges(FileInfo* info) {
 		return;
 	}
 
-	fprintf(stderr, "Too many challenges assigned to room %lu (max %u).\n", global.rooms[info->roomCounter].roomNumber, MAX_CHALLENGES_PER_ROOM);
+	size_t currentRoom = global.rooms[info->roomCounter].roomNumber;
+	printf("Too many challenges assigned to room %lu (max %u).\n", currentRoom, MAX_CHALLENGES_PER_ROOM);
 	leave();
 }
 
@@ -203,6 +204,8 @@ void extractIntroductoryText(FileInfo* info) {
 void updateLine(FileInfo* info) {
 	if (info->current != '\n') return;
 	
+	validateLine(info);
+
 	info->lineCounter++;
 	info->lineCharacterCounter = 0;
 	memset(info->line, 0, MAX_FILE_LINE_LENGTH);
@@ -215,7 +218,6 @@ void extract(FILE* roomFile) {
 	while ((info.current = fgetc(roomFile)) != EOF) {
 		info.line[info.lineCharacterCounter] = info.current;
 		info.lineCharacterCounter++;
-		extractValidate(&info);
 		extractRoomNumber(&info);
 		extractRoomMessage(&info);
 		connectingRoomCheck(&info);

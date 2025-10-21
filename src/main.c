@@ -31,10 +31,7 @@ void printDebugInfo(void) {
 		printf("South connection: %zu\n", global.rooms[i].connections[SOUTH]);
 		printf("West connection: %zu\n", global.rooms[i].connections[WEST]);
 		printf("\n");
-
-		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++)
-			printf("Challenge %zu: %u\n", j + 1, global.rooms[i].challenge[j]);
-
+		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) printf("Challenge %zu: %u\n", j + 1, global.rooms[i].challenge[j]);
 		printf("\n");
 	}
 }
@@ -59,5 +56,6 @@ int main(void) {
 		gameLogic();
 		//printDebugInfo();
 	}
+
 	return 0;
 }
