@@ -6,9 +6,5 @@ project(dungeon-crawler
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 add_executable(${CMAKE_PROJECT_NAME})
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
-	-O3
-	-Wall -Wextra -Wpedantic -Werror
-)
 add_subdirectory(src)
 add_subdirectory(lib)
