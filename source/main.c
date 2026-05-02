@@ -2,13 +2,13 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "constants.h"
-#include "structs.h"
-#include "mutables.h"
+#include "constant.h"
+#include "struct.h"
+#include "mutable.h"
 
-#include "utils.h"
-#include "file_logic.h"
-#include "game_logic.h"
+#include "utility.h"
+#include "file.h"
+#include "game.h"
 
 GameState global = {0};
 

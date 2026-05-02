@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef UTILITY_H
+#define UTILITY_H
 
 void leave(void);
 void ask(void);

@@ -4,11 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "constants.h"
-#include "structs.h"
-#include "mutables.h"
+#include "constant.h"
+#include "struct.h"
+#include "mutable.h"
 
-#include "utils.h"
+#include "utility.h"
 
 void initialiseRoomFile(FILE* roomFile) {
 	const char* initialConfiguration =

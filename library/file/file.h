@@ -1,5 +1,5 @@
-#ifndef FILE_LOGIC_H
-#define FILE_LOGIC_H
+#ifndef FILE_H
+#define FILE_H
 
 #include <stdbool.h>
 

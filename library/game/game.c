@@ -6,11 +6,11 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "constants.h"
-#include "structs.h"
-#include "mutables.h"
+#include "constant.h"
+#include "struct.h"
+#include "mutable.h"
 
-#include "utils.h"
+#include "utility.h"
 
 void helpText(void) {
 	const char* helpText =
@@ -30,7 +30,6 @@ void interpretInput(void) {
 			continue;
 		}
 
-		// If uppercase, make lowercase
 		if (global.response[read] >= 'A' && global.response[read] <= 'Z') global.response[read] += 32;
 
 		global.response[write] = global.response[read];

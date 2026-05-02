@@ -3,9 +3,9 @@
 #include <string.h>
 #include <stdint.h>
 
-#include "constants.h"
-#include "structs.h"
-#include "mutables.h"
+#include "constant.h"
+#include "struct.h"
+#include "mutable.h"
 
 void leave(void) {
 	while (strncmp(global.response, "\n", 1) != 0) {

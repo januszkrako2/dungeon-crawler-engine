@@ -1,7 +1,9 @@
-#ifndef STRUCTS_H
-#define STRUCTS_H
+#ifndef STRUCT_H
+#define STRUCT_H
 
 #include <stdbool.h>
+
+#include "constant.h"
 
 typedef struct {
 	int32_t health;

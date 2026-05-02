@@ -1,5 +1,5 @@
-#ifndef GAME_LOGIC_H
-#define GAME_LOGIC_H
+#ifndef GAME_H
+#define GAME_H
 
 void helpText(void);
 void interpretInput(void);
