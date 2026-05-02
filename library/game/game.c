@@ -24,27 +24,27 @@ void helpText(void) {
 void interpretInput(void) {
 	size_t read = 0;
 	size_t write = 0;
-	while (global.response[read] != '\0') {
-		if (isspace(global.response[read])) {
+	while (game.response[read] != '\0') {
+		if (isspace(game.response[read])) {
 			read++;
 			continue;
 		}
 
-		if (global.response[read] >= 'A' && global.response[read] <= 'Z') global.response[read] += 32;
+		if (game.response[read] >= 'A' && game.response[read] <= 'Z') game.response[read] += 32;
 
-		global.response[write] = global.response[read];
+		game.response[write] = game.response[read];
 		write++;
 		read++;
 	}
-	global.response[write] = '\0';
+	game.response[write] = '\0';
 
-	if (strncmp(global.response, "go", 2) == 0) trimStart(global.response, 2);
-	else if (strncmp(global.response, "now", 3) == 0) trimStart(global.response, 3);
-	else if (strncmp(global.response, "solve", 5) == 0) trimStart(global.response, 5);
+	if (strncmp(game.response, "go", 2) == 0) trimStart(game.response, 2);
+	else if (strncmp(game.response, "now", 3) == 0) trimStart(game.response, 3);
+	else if (strncmp(game.response, "solve", 5) == 0) trimStart(game.response, 5);
 }
 
 void physicalChallenge(void) {
-	PhysicalChallenge delinquent;
+	struct physical_challenge delinquent;
 	delinquent.health = 2;
 
 	printf("A delinquent appears! They look at you menacingly.\n");
@@ -54,7 +54,7 @@ void physicalChallenge(void) {
 		ask();
 
 		interpretInput();
-		if (strncmp(global.response, "attack", 6) != 0) continue;
+		if (strncmp(game.response, "attack", 6) != 0) continue;
 		
 		delinquent.health--;
 		if (delinquent.health > 0) printf("\nThe delinquent takes a hit.\n");
@@ -65,31 +65,31 @@ void physicalChallenge(void) {
 void puzzleChallenge(void) {
 	srand(time(NULL));
 
-	PuzzleChallenge puzzle;
-	puzzle.firstNumber = rand() % 100 + 1;
-	puzzle.secondNumber = rand() % 100 + 1;
-	size_t answer = puzzle.firstNumber * puzzle.secondNumber;
+	struct puzzle_challenge puzzle;
+	puzzle.first = rand() % 100 + 1;
+	puzzle.second = rand() % 100 + 1;
+	size_t answer = puzzle.first * puzzle.second;
 
 	printf("There is a note on the floor. You pick it up.\n");
-	printf("It says, '%zu x %zu'.\n", puzzle.firstNumber, puzzle.secondNumber);
+	printf("It says, '%zu x %zu'.\n", puzzle.first, puzzle.second);
 
-	while (stringToSizeT(global.response) != answer) {
+	while (stringToSizeT(game.response) != answer) {
 		printf("What could it possibly mean? ");
 		ask();
 		interpretInput();
 	}
 
-	printf("\nYou write '%s' on the note. Nice.\n", global.response);
+	printf("\nYou write '%s' on the note. Nice.\n", game.response);
 }
 
 void clearChallenge(void) {
 	size_t i;
 	for (i = 0; i < MAX_ROOMS; i++) {
-		if (global.player.currentRoom.roomNumber != global.rooms[i].roomNumber) continue;
+		if (game.player.currentRoom.roomNumber != game.rooms[i].roomNumber) continue;
 		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) {
-			if (global.rooms[i].challenge[j] != NONE) {
-				global.rooms[i].challenge[j] = NONE;
-				global.player.currentRoom = global.rooms[i];
+			if (game.rooms[i].challenge[j] != NONE) {
+				game.rooms[i].challenge[j] = NONE;
+				game.player.currentRoom = game.rooms[i];
 				break;
 			}
 		}
@@ -103,7 +103,7 @@ void clearChallenge(void) {
 
 void challengeLogic(void) {
 	for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++) {
-		switch (global.player.currentRoom.challenge[i]) {
+		switch (game.player.currentRoom.challenge[i]) {
 		case NONE:
 			break;
 		case PHYSICAL:
@@ -126,8 +126,8 @@ void moveLogic(size_t nextRoom) {
 
 	size_t i;
 	for (i = 0; i < MAX_ROOMS; i++) {
-		if (global.rooms[i].roomNumber == nextRoom) {
-			global.player.currentRoom = global.rooms[i];
+		if (game.rooms[i].roomNumber == nextRoom) {
+			game.player.currentRoom = game.rooms[i];
 			break;
 		}
 	}
@@ -136,7 +136,7 @@ void moveLogic(size_t nextRoom) {
 		leave();
 	}
 
-	printf("\n%s", global.player.currentRoom.message);
+	printf("\n%s", game.player.currentRoom.message);
 }
 
 void gameLogic(void) {
@@ -144,27 +144,27 @@ void gameLogic(void) {
 
 	size_t nextRoom = 0;
 	bool moved = false;
-	if (strncmp(global.response, "help", 4) == 0) {
+	if (strncmp(game.response, "help", 4) == 0) {
 		printf("\n");
 		helpText();
 		return;
-	} else if (strncmp(global.response, "north", 5) == 0) {
+	} else if (strncmp(game.response, "north", 5) == 0) {
 		moved = true;
-		nextRoom = global.player.currentRoom.connections[NORTH];
-	} else if (strncmp(global.response, "east", 4) == 0) {
+		nextRoom = game.player.currentRoom.connections[NORTH];
+	} else if (strncmp(game.response, "east", 4) == 0) {
 		moved = true;
-		nextRoom = global.player.currentRoom.connections[EAST];
-	} else if (strncmp(global.response, "south", 5) == 0) {
+		nextRoom = game.player.currentRoom.connections[EAST];
+	} else if (strncmp(game.response, "south", 5) == 0) {
 		moved = true;
-		nextRoom = global.player.currentRoom.connections[SOUTH];
-	} else if (strncmp(global.response, "west", 4) == 0) {
+		nextRoom = game.player.currentRoom.connections[SOUTH];
+	} else if (strncmp(game.response, "west", 4) == 0) {
 		moved = true;
-		nextRoom = global.player.currentRoom.connections[WEST];
+		nextRoom = game.player.currentRoom.connections[WEST];
 	}
 	if (moved) moveLogic(nextRoom);
 
-	if (global.player.currentRoom.roomNumber == 1) {
-		printf("Congratulations, %s!\n", global.player.name);
+	if (game.player.currentRoom.roomNumber == 1) {
+		printf("Congratulations, %s!\n", game.player.name);
 		leave();
 	}
 

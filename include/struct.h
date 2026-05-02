@@ -5,46 +5,46 @@
 
 #include "constant.h"
 
-typedef struct {
+struct physical_challenge {
 	int32_t health;
-} PhysicalChallenge;
+};
 
-typedef struct {
-	size_t firstNumber;
-	size_t secondNumber;
-} PuzzleChallenge;
+struct puzzle_challenge {
+	size_t first;
+	size_t second;
+};
 
-typedef enum {
+enum challenge {
 	NONE,
 	PHYSICAL,
 	PUZZLE
-} Challenge;
+};
 
-typedef enum {
+enum direction {
 	NORTH,
 	EAST,
 	SOUTH,
 	WEST
-} Direction;
+};
 
-typedef struct {
+struct room {
 	size_t roomNumber;
 	char message[MAX_ROOM_MESSAGE_LENGTH];
 	size_t connections[4]; // North, East, South, West
-	Challenge challenge[MAX_CHALLENGES_PER_ROOM];
-} Room;
+	enum challenge challenge[MAX_CHALLENGES_PER_ROOM];
+};
 
-typedef struct {
+struct connection {
 	const char* text;
 	size_t size;
-} Connection;
+};
 
-typedef struct {
+struct player {
 	char name[PLAYER_NAME_LENGTH];
-	Room currentRoom;
-} Player;
+	struct room currentRoom;
+};
 
-typedef struct {
+struct file {
 	bool connectingRooms;
 	bool readingIntroductoryText;
 	size_t roomCounter;
@@ -54,13 +54,13 @@ typedef struct {
 	char line[MAX_FILE_LINE_LENGTH];
 	char current;
 	bool errored;
-} FileInfo;
+};
 
-typedef struct {
-	Player player;
-	Room rooms[MAX_ROOMS];
+struct game {
+	struct player player;
+	struct room rooms[MAX_ROOMS];
 	char response[MAX_RESPONSE_LENGTH];
 	char introductoryText[INTRO_TEXT_MAX_LENGTH];
-} GameState;
+};
 
 #endif

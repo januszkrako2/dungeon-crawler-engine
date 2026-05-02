@@ -8,15 +8,15 @@
 #include "mutable.h"
 
 void leave(void) {
-	while (strncmp(global.response, "\n", 1) != 0) {
+	while (strncmp(game.response, "\n", 1) != 0) {
 		printf("Press enter to leave.\n");
 
-		if (fgets(global.response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
+		if (fgets(game.response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
 			printf("Error getting user input.\n");
 			exit(1);
 		}
 
-		char* newlinePosition = strchr(global.response, '\n');
+		char* newlinePosition = strchr(game.response, '\n');
 		if (newlinePosition == NULL) while(getchar() != '\n');
 	}
 
@@ -24,12 +24,12 @@ void leave(void) {
 }
 
 void ask(void) {
-	if (fgets(global.response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
+	if (fgets(game.response, MAX_RESPONSE_LENGTH, stdin) == NULL) {
 		printf("Error getting user input.\n");
 		leave();
 	}
 
-	char* newlinePosition = strchr(global.response, '\n');
+	char* newlinePosition = strchr(game.response, '\n');
 
 	if (newlinePosition == NULL) while(getchar() != '\n');
 	else *newlinePosition = '\0';
