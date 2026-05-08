@@ -138,8 +138,8 @@ void play(struct game *game, char *user_input) {
 		move(game, WEST);
 	} else if (strncmp(user_input, "exit", 4) == 0 ||
 	           strncmp(user_input, "leave", 5) == 0 ||
-		   strncmp(user_input, "quit", 4) == 0 ||
-		   strncmp(user_input, "out", 3) == 0) {
+	           strncmp(user_input, "quit", 4) == 0 ||
+	           strncmp(user_input, "out", 3) == 0) {
 		util_leave();
 	}
 
