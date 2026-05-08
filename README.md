@@ -12,7 +12,7 @@ On Linux, install CMake through your package manager and create a 'build' folder
 
 ## How to configure
 
-The game is designed to be configured by the user, making this project actually a small game engine of sorts. The configuration takes place in a file called rooms.txt, which is generated in the same directory as the executable when you run it. By default, the configuration looks like this:
+The game is designed to be configured by the user, making this project actually a small game engine of sorts. The configuration takes place in a file generated in the same directory by the executable. It looks like this by default:
 
 ```
 [ROOMS]
@@ -49,11 +49,11 @@ CHALLENGE: None
 You arise from a deep rest. There's a door up north.
 ```
 
-The formatting is strictly enforced. You must use exactly the same capitalisation and whitespacing as the above template. The room connection lines (``NORTH: None``, ``SOUTH: 100``) must be indented with tabs.
+There is some flexibility in the format, though you must use the exact capitalisation as the above template. The room connection lines (``NORTH: None``, ``SOUTH: 100``) must be indented with tabs, but the 'CONNECTIONS:' line may be omitted.
 
 Room number 1 is reserved for the final room of your game. Once this room is entered, its message is displayed followed by prompt asking you to exit the program.
 
-As good practise, you should identify all other rooms by room number 100 and greater.
+As good practise, you should identify all other rooms by room number 10 or greater.
 
 Currently, there are two types of challenges: physical and puzzle. The physical challenge spawns a delinquent in the room whom you must attack to proceed. The puzzle challenge spawns a note with a maths problem you must solve to proceed.
 
@@ -64,12 +64,12 @@ ROOM NUMBER: 102
 MESSAGE: You enter another room. This is an example.
 CONNECTIONS:
 	NORTH: None
-	EAST: None
-	SOUTH: None
-	WEST: None
-CHALLENGE: None
+	EAST: 103
+	SOUTH: 119
+	WEST: 110
+CHALLENGE: Physical, Puzzle, Puzzle, Physical
 ```
 
 ## How to play
 
-Launch the application in a terminal and follow the onscreen instructions.
+Launch the application in a terminal and follow the instructions.

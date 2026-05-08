@@ -7,60 +7,38 @@
 #include <time.h>
 
 #include "constant.h"
-#include "struct.h"
-#include "mutable.h"
 
-#include "utility.h"
+#include "util.h"
 
-void print_help_text(void) {
-	const char* help_text =
-	"Type compass directions to move.\n"
-	"Type 'attack' to attack.\n"
-	"Type numbers to solve puzzles.\n";
+struct physical_challenge {
+	int32_t health;
+};
 
-	printf("%s", help_text);
-}
+struct puzzle_challenge {
+	size_t first;
+	size_t second;
+};
 
-static void interpret_input(void) {
-	size_t read = 0;
-	size_t write = 0;
-	while (game.response[read] != '\0') {
-		if (isspace(game.response[read])) {
-			read++;
-			continue;
-		}
+struct connection {
+	const char* text;
+	size_t size;
+};
 
-		if (game.response[read] >= 'A' && game.response[read] <= 'Z') {
-			game.response[read] += 32;
-		}
-
-		game.response[write] = game.response[read];
-		write++;
-		read++;
-	}
-	game.response[write] = '\0';
-
-	if (strncmp(game.response, "go", 2) == 0) {
-		trim_start(game.response, 2);
-	} else if (strncmp(game.response, "now", 3) == 0) {
-		trim_start(game.response, 3);
-	} else if (strncmp(game.response, "solve", 5) == 0) {
-		trim_start(game.response, 5);
-	}
-}
-
-static void physical_challenge(void) {
+static void physical_challenge(struct game *game) {
 	struct physical_challenge delinquent;
 	delinquent.health = 2;
 
 	printf("A delinquent appears! They look at you menacingly.\n");
 
+	char user_input[MAX_RESPONSE_LENGTH] = {'\0'};
+
 	while (delinquent.health > 0) {
 		printf("How do you respond? ");
-		ask();
 
-		interpret_input();
-		if (strncmp(game.response, "attack", 6) != 0) {
+		util_wait_for_user_input(user_input);
+		util_sanitise_input(user_input);
+
+		if (strncmp(user_input, "attack", 6) != 0) {
 			continue;
 		}
 		
@@ -73,7 +51,7 @@ static void physical_challenge(void) {
 	}
 }
 
-static void puzzle_challenge(void) {
+static void puzzle_challenge(struct game *game) {
 	srand(time(NULL));
 
 	struct puzzle_challenge puzzle;
@@ -84,25 +62,28 @@ static void puzzle_challenge(void) {
 	printf("There is a note on the floor. You pick it up.\n");
 	printf("It says, '%zu x %zu'.\n", puzzle.first, puzzle.second);
 
-	while (string_to_size_t(game.response) != answer) {
+	char user_input[MAX_RESPONSE_LENGTH] = {'\0'};
+
+	while (util_string_to_size_t(user_input) != answer) {
 		printf("What could it possibly mean? ");
-		ask();
-		interpret_input();
+		util_wait_for_user_input(user_input);
+		util_sanitise_input(user_input);
 	}
 
-	printf("\nYou write '%s' on the note. Nice.\n", game.response);
+	printf("\nYou write '%s' on the note. Nice.\n", user_input);
 }
 
-static void clear_challenge(void) {
+static void clear_challenge(struct game *game) {
 	size_t i;
-	for (i = 0; i < MAX_ROOMS; i++) {
-		if (game.player.room.room_number != game.rooms[i].room_number) {
+	for (i = 0; i < MAX_ROOMS; ++i) {
+		if (game->player.room.room_number !=
+		    game->rooms[i].room_number) {
 			continue;
 		}
-		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; j++) {
-			if (game.rooms[i].challenge[j] != NONE) {
-				game.rooms[i].challenge[j] = NONE;
-				game.player.room = game.rooms[i];
+		for (size_t j = 0; j < MAX_CHALLENGES_PER_ROOM; ++j) {
+			if (game->rooms[i].challenges[j] != NONE) {
+				game->rooms[i].challenges[j] = NONE;
+				game->player.room.challenges[j] = NONE;
 				break;
 			}
 		}
@@ -110,79 +91,80 @@ static void clear_challenge(void) {
 	}
 	if (i == MAX_ROOMS) {
 		printf("Cannot clear challenge from a room.\n");
-		leave();
+		util_leave();
 	}
 }
 
-static void challenge_logic(void) {
-	for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; i++) {
-		switch (game.player.room.challenge[i]) {
-		case NONE:
-			break;
-		case PHYSICAL:
-			physical_challenge();
-			clear_challenge();
-			break;
-		case PUZZLE:
-			puzzle_challenge();
-			clear_challenge();
-			break;
-		}
-	}
-}
+static void move(struct game *game, enum direction direction) {
+	size_t next_room = game->player.room.connections[direction];
 
-static void move_logic(size_t next_room) {
 	if (next_room == 0) {
 		printf("\nYou hit a wall. Ouch!\n");
 		return;
 	}
 
 	size_t i;
-	for (i = 0; i < MAX_ROOMS; i++) {
-		if (game.rooms[i].room_number == next_room) {
-			game.player.room = game.rooms[i];
+	for (i = 0; i < MAX_ROOMS; ++i) {
+		if (game->rooms[i].room_number == next_room) {
+			game->player.room = game->rooms[i];
 			break;
 		}
 	}
 	if (i == MAX_ROOMS) {
 		printf("Couldn't find room.\n");
-		leave();
+		util_leave();
 	}
 
-	printf("\n%s", game.player.room.message);
+	printf("\n%s", game->player.room.message);
 }
 
-void game_logic(void) {
-	interpret_input();
+void print_help_text(void) {
+	const char *help_text =
+	"Type compass directions to move.\n"
+	"Type 'attack' to attack.\n"
+	"Type numbers to solve puzzles.\n"
+	"Type 'exit', 'leave' or similar to quit.\n";
 
-	size_t next_room = 0;
-	bool moved = false;
-	if (strncmp(game.response, "help", 4) == 0) {
+	printf("%s", help_text);
+}
+
+void play(struct game *game, char *user_input) {
+	if (strncmp(user_input, "help", 4) == 0) {
 		printf("\n");
 		print_help_text();
 		return;
-	} else if (strncmp(game.response, "north", 5) == 0) {
-		moved = true;
-		next_room = game.player.room.connections[NORTH];
-	} else if (strncmp(game.response, "east", 4) == 0) {
-		moved = true;
-		next_room = game.player.room.connections[EAST];
-	} else if (strncmp(game.response, "south", 5) == 0) {
-		moved = true;
-		next_room = game.player.room.connections[SOUTH];
-	} else if (strncmp(game.response, "west", 4) == 0) {
-		moved = true;
-		next_room = game.player.room.connections[WEST];
-	}
-	
-	if (moved) {
-		move_logic(next_room);
+	} else if (strncmp(user_input, "north", 5) == 0) {
+		move(game, NORTH);
+	} else if (strncmp(user_input, "east", 4) == 0) {
+		move(game, EAST);
+	} else if (strncmp(user_input, "south", 5) == 0) {
+		move(game, SOUTH);
+	} else if (strncmp(user_input, "west", 4) == 0) {
+		move(game, WEST);
+	} else if (strncmp(user_input, "exit", 4) == 0 ||
+	           strncmp(user_input, "leave", 5) == 0 ||
+		   strncmp(user_input, "quit", 4) == 0 ||
+		   strncmp(user_input, "out", 3) == 0) {
+		util_leave();
 	}
 
-	if (game.player.room.room_number == 1) {
-		printf("Congratulations, %s!\n", game.player.name);
-		leave();
+	if (game->player.room.room_number == 1) {
+		printf("Congratulations, %s!\n", game->player.name);
+		util_leave();
 	}
 
-	challenge_logic();
+	for (size_t i = 0; i < MAX_CHALLENGES_PER_ROOM; ++i) {
+		switch (game->player.room.challenges[i]) {
+		case NONE:
+			break;
+		case PHYSICAL:
+			physical_challenge(game);
+			clear_challenge(game);
+			break;
+		case PUZZLE:
+			puzzle_challenge(game);
+			clear_challenge(game);
+			break;
+		}
+	}
 }
