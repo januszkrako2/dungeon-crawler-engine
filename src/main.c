@@ -46,7 +46,8 @@ int main(void) {
 	load_game_from_config_file(&game);
 	
 	print_help_text();
-	printf("Type 'help' to bring up these instructions (after giving your name).\n\n");
+	printf("Type 'help' to bring up these instructions"
+	       " (after giving your name).\n\n");
 
 	char user_input[MAX_RESPONSE_LENGTH] = {'\0'};
 
