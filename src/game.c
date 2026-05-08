@@ -11,17 +11,12 @@
 #include "util.h"
 
 struct physical_challenge {
-	int32_t health;
+	int health;
 };
 
 struct puzzle_challenge {
-	size_t first;
-	size_t second;
-};
-
-struct connection {
-	const char* text;
-	size_t size;
+	int first;
+	int second;
 };
 
 static void physical_challenge(struct game *game) {
@@ -60,7 +55,7 @@ static void puzzle_challenge(struct game *game) {
 	size_t answer = puzzle.first * puzzle.second;
 
 	printf("There is a note on the floor. You pick it up.\n");
-	printf("It says, '%zu x %zu'.\n", puzzle.first, puzzle.second);
+	printf("It says, '%d x %d'.\n", puzzle.first, puzzle.second);
 
 	char user_input[MAX_RESPONSE_LENGTH] = {'\0'};
 
