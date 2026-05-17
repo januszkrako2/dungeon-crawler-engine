@@ -19,7 +19,7 @@ struct puzzle_challenge {
 	int second;
 };
 
-static void physical_challenge(struct game *game) {
+static void physical_challenge(void) {
 	struct physical_challenge delinquent;
 	delinquent.health = 2;
 
@@ -46,7 +46,7 @@ static void physical_challenge(struct game *game) {
 	}
 }
 
-static void puzzle_challenge(struct game *game) {
+static void puzzle_challenge(void) {
 	srand(time(NULL));
 
 	struct puzzle_challenge puzzle;
@@ -153,11 +153,11 @@ void play(struct game *game, char *user_input) {
 		case NONE:
 			break;
 		case PHYSICAL:
-			physical_challenge(game);
+			physical_challenge();
 			clear_challenge(game);
 			break;
 		case PUZZLE:
-			puzzle_challenge(game);
+			puzzle_challenge();
 			clear_challenge(game);
 			break;
 		}
