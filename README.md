@@ -12,7 +12,7 @@ On Linux, install CMake through your package manager and create a 'build' folder
 
 ## How to configure
 
-The game is designed to be configured by the user, making this project actually a small game engine of sorts. The configuration takes place in a file generated in the same directory by the executable. It looks like this by default:
+The configuration takes place in a file generated in the same directory by the executable. It looks like this by default:
 
 ```
 [ROOMS]
