@@ -1,6 +1,6 @@
-# dungeon-crawler
+# dungeon-crawler-engine
 
-A simple dungeon crawler game for the terminal.
+A simple engine for making CLI dungeon crawler games.
 
 ## How to run
 
